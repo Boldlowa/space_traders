@@ -1,62 +1,14 @@
 import axios from "axios";
+import type {
+  AgentResult,
+  RawSystem,
+  SystemItem,
+  SystemsMeta,
+  SystemsResult,
+  Waypoint,
+} from "./Schema/systemSchema";
 
-interface OrbitalRef {
-  symbol?: string;
-}
-
-interface Waypoint {
-  orbitals?: OrbitalRef[];
-}
-
-interface FactionRef {
-  symbol?: string;
-}
-
-interface RawSystem {
-  symbol: string;
-  name?: string;
-  type: string;
-  sectorSymbol: string;
-  constellation?: string;
-  x: number;
-  y: number;
-  waypoints?: Waypoint[];
-  factions?: FactionRef[];
-}
-
-export interface SystemItem {
-  id: string;
-  symbol: string;
-  name: string;
-  type: string;
-  sectorSymbol: string;
-  constellation: string;
-  coordinates: {
-    x: number;
-    y: number;
-  };
-  waypointCount: number;
-  orbitalCount: number;
-  factionSymbols: string[];
-}
-
-export interface SystemsMeta {
-  total: number;
-  page: number;
-  limit: number;
-}
-
-export interface SystemsResult {
-  items: SystemItem[];
-  meta: SystemsMeta | null;
-}
-
-interface AgentResult {
-  data: {
-    symbol: string;
-    credits: number;
-  };
-}
+export type { SystemItem, SystemsMeta } from "./Schema/systemSchema";
 
 const options = {
   headers: {
@@ -110,7 +62,7 @@ export const getAllSystems = async (): Promise<SystemsResult> => {
   );
   const payload = res.data;
   const systems = Array.isArray(payload?.data) ? payload.data : [];
-
+  console.log("Fetched systems:", systems);
   return {
     items: systems.map(toSystemItem),
     meta: payload?.meta ?? null,
