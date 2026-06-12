@@ -33,6 +33,8 @@ function App() {
     <div className="app-shell">
       <header className="topbar">
         <h1 className="brand-title">SpaceTraders Dashboard</h1>
+        <h2 className="page-title">{NAV_ITEMS.find((item) => item.key === activePage)?.label}</h2>
+        <h3 className="name">Boldlowa</h3>
       </header>
 
       <div className="body-layout">

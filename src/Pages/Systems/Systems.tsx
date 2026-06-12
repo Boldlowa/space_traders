@@ -7,6 +7,7 @@ import {
 } from "../../Api";
 import "./Systems.css";
 import XYDataChart from "../../Common/XYDataChart";
+import { SystemCard } from "../../Common/SystemCard";
 type Agent = {
   symbol: string;
   credits: number;
@@ -40,24 +41,19 @@ function Systems() {
 
   return (
     <section className="systems-page">
-      {systemsError ? <p className="systems-error">{systemsError}</p> : null}
+      {isSystemsLoading ? (
+        <p className="systems-loading">Chargement des systèmes...</p>
+      ) : (
+        <>
+          {systemsError ? <p className="systems-error">{systemsError}</p> : null}
 
-      {systemsMeta ? (
-        <p className="systems-meta">
-          Total API: {systemsMeta.total} | Page: {systemsMeta.page} | Limite:{" "}
-          {systemsMeta.limit}
-        </p>
-      ) : null}
-
-      <ul className="systems-list">
-        {systems.map((system) => (
-          <li key={system.id} className="systems-item">
-            <strong>{system.name}</strong> ({system.symbol}) - {system.type} -
-            Waypoints: {system.waypointCount} - Orbitals: {system.orbitalCount}
-          </li>
-        ))}
-      </ul>
-      <XYDataChart />
+          <div className="systems-grid">
+            {systems.map((system) => (
+              <SystemCard key={system.id} system={system} />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

@@ -28,23 +28,6 @@ function Home() {
     loadAgent();
   }, []);
 
-  const loadSystems = async () => {
-    setIsSystemsLoading(true);
-    setSystemsError("");
-
-    try {
-      const result = await getAllSystems();
-      setSystems(result.items);
-      setSystemsMeta(result.meta);
-    } catch {
-      setSystemsError("Impossible de charger les systemes");
-      setSystems([]);
-      setSystemsMeta(null);
-    } finally {
-      setIsSystemsLoading(false);
-    }
-  };
-
   return (
     <section className="home-page">
       {agent ? (

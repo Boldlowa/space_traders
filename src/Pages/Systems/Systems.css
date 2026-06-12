@@ -1,0 +1,18 @@
+.systems-loading {
+  font-size: 1.1rem;
+  color: #60a5fa;
+  margin: 16px 0;
+}
+
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.system-card {
+  padding: 16px;
+  min-height: 120px;
+  display: flex;
+}
