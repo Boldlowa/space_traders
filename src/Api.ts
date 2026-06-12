@@ -1,5 +1,63 @@
 import axios from "axios";
 
+interface OrbitalRef {
+  symbol?: string;
+}
+
+interface Waypoint {
+  orbitals?: OrbitalRef[];
+}
+
+interface FactionRef {
+  symbol?: string;
+}
+
+interface RawSystem {
+  symbol: string;
+  name?: string;
+  type: string;
+  sectorSymbol: string;
+  constellation?: string;
+  x: number;
+  y: number;
+  waypoints?: Waypoint[];
+  factions?: FactionRef[];
+}
+
+export interface SystemItem {
+  id: string;
+  symbol: string;
+  name: string;
+  type: string;
+  sectorSymbol: string;
+  constellation: string;
+  coordinates: {
+    x: number;
+    y: number;
+  };
+  waypointCount: number;
+  orbitalCount: number;
+  factionSymbols: string[];
+}
+
+export interface SystemsMeta {
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface SystemsResult {
+  items: SystemItem[];
+  meta: SystemsMeta | null;
+}
+
+interface AgentResult {
+  data: {
+    symbol: string;
+    credits: number;
+  };
+}
+
 const options = {
   headers: {
     "Content-Type": "application/json",
@@ -13,7 +71,7 @@ const API = axios.create({
   ...options,
 });
 
-const toSystemItem = (system) => {
+const toSystemItem = (system: RawSystem): SystemItem => {
   const waypoints = Array.isArray(system?.waypoints) ? system.waypoints : [];
   const factions = Array.isArray(system?.factions) ? system.factions : [];
 
@@ -29,23 +87,27 @@ const toSystemItem = (system) => {
       y: system.y,
     },
     waypointCount: waypoints.length,
-    orbitalCount: waypoints.reduce((count, waypoint) => {
-      const orbitals = Array.isArray(waypoint?.orbitals) ? waypoint.orbitals : [];
+    orbitalCount: waypoints.reduce((count: number, waypoint: Waypoint) => {
+      const orbitals = Array.isArray(waypoint?.orbitals)
+        ? waypoint.orbitals
+        : [];
       return count + orbitals.length;
     }, 0),
     factionSymbols: factions
       .map((faction) => faction?.symbol)
-      .filter((symbol) => typeof symbol === "string"),
+      .filter((symbol): symbol is string => typeof symbol === "string"),
   };
 };
 
-export const getAgentInfo = async () => {
-  const res = await API.get("/my/agent");
+export const getAgentInfo = async (): Promise<AgentResult> => {
+  const res = await API.get<AgentResult>("/my/agent");
   return res.data;
 };
 
-export const getAllSystems = async () => {
-  const res = await API.get(`/systems`);
+export const getAllSystems = async (): Promise<SystemsResult> => {
+  const res = await API.get<{ data?: RawSystem[]; meta?: SystemsMeta }>(
+    "/systems",
+  );
   const payload = res.data;
   const systems = Array.isArray(payload?.data) ? payload.data : [];
 
