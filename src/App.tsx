@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Home from "./Pages/Home/Home";
 import "./App.css";
+import { Box, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -10,14 +12,17 @@ function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <button
-          type="button"
-          className="menu-toggle"
-          onClick={() => setIsDrawerOpen(true)}
-          aria-label="Ouvrir le menu"
-        >
-          Menu
-        </button>
+        <Box>
+          <IconButton
+            onClick={() => {
+              console.log("Menu clicked");
+              setIsDrawerOpen(true);
+            }}
+            aria-label="Ouvrir le menu"
+          >
+            <MenuIcon style={{ color: "#ffffff" }} />
+          </IconButton>
+        </Box>
         <h1 className="brand-title">SpaceTraders Dashboard</h1>
       </header>
 
