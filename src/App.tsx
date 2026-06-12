@@ -1,66 +1,58 @@
 import { useState } from "react";
 import Home from "./Pages/Home/Home";
 import "./App.css";
-import { Box, IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Tooltip } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import Systems from "./Pages/Systems/Systems";
+
+const NAV_ITEMS = [
+  { key: "home", label: "Home", icon: <HomeIcon /> },
+  { key: "systems", label: "Systems", icon: <TravelExploreIcon /> },
+  { key: "fleet", label: "Fleet", icon: <RocketLaunchIcon /> },
+  { key: "contracts", label: "Contracts", icon: <AssignmentIcon /> },
+];
+
+function renderPage(page: string) {
+  if (page === "home") return <Home />;
+  if (page === "systems") return <Systems />;
+  return (
+    <div style={{ padding: 32, color: "#94a3b8" }}>
+      <h2>{page.charAt(0).toUpperCase() + page.slice(1)}</h2>
+      <p>Coming soon...</p>
+    </div>
+  );
+}
 
 function App() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const closeDrawer = () => setIsDrawerOpen(false);
+  const [activePage, setActivePage] = useState("home");
 
   return (
     <div className="app-shell">
       <header className="topbar">
-        <Box>
-          <IconButton
-            onClick={() => {
-              console.log("Menu clicked");
-              setIsDrawerOpen(true);
-            }}
-            aria-label="Ouvrir le menu"
-          >
-            <MenuIcon style={{ color: "#ffffff" }} />
-          </IconButton>
-        </Box>
         <h1 className="brand-title">SpaceTraders Dashboard</h1>
       </header>
 
-      <div className="layout">
-        <aside className={`drawer ${isDrawerOpen ? "open" : ""}`}>
-          <div className="drawer-head">
-            <h2>Navigation</h2>
-            <button
-              type="button"
-              className="close-drawer"
-              onClick={closeDrawer}
-            >
-              Fermer
-            </button>
-          </div>
-          <nav>
-            <button
-              type="button"
-              className="drawer-link active"
-              onClick={closeDrawer}
-            >
-              Home
-            </button>
-          </nav>
-        </aside>
-
-        {isDrawerOpen ? (
-          <button
-            type="button"
-            className="drawer-backdrop"
-            aria-label="Fermer le menu"
-            onClick={closeDrawer}
-          />
-        ) : null}
-
-        <main className="page-content">
-          <Home />
-        </main>
+      <div className="body-layout">
+        <nav className="sidebar">
+          {NAV_ITEMS.map(({ key, label, icon }) => (
+            <Tooltip key={key} title={label} placement="right">
+              <button
+                type="button"
+                className={`sidebar-btn${activePage === key ? " active" : ""}`}
+                onClick={() => setActivePage(key)}
+                aria-label={label}
+              >
+                {icon}
+              </button>
+            </Tooltip>
+          ))}
+        </nav>
+        <div className="layout">
+          <main className="page-content">{renderPage(activePage)}</main>
+        </div>
       </div>
     </div>
   );
