@@ -1,60 +1,21 @@
-// JSON schema for SpaceTraders systems payload.
-// This schema matches: { data: [ { system... } ] }
+const { type } = require("@testing-library/user-event/dist/type");
 
-const orbitalSchema = {
-	type: "object",
-	additionalProperties: false,
-	required: ["symbol"],
-	properties: {
-		symbol: { type: "string", minLength: 1 },
-	},
+export const system = {
+  symbol: { type: "string" },
+  sectorSymbol: { type: "string" },
+  type: { type: "string" },
+  x: { type: "number" },
+  y: { type: "number" },
+  waypoints: [waypoint],
+};
+const waypoint = {
+  symbol: { type: "string" },
+  type: { type: "string" },
+  x: { type: "number" },
+  y: { type: "number" },
+  orbitals: [orbital],
 };
 
-const waypointSchema = {
-	type: "object",
-	additionalProperties: true,
-	required: ["symbol", "type", "x", "y", "orbitals"],
-	properties: {
-		symbol: { type: "string", minLength: 1 },
-		type: { type: "string", minLength: 1 },
-		x: { type: "integer" },
-		y: { type: "integer" },
-		orbitals: {
-			type: "array",
-			items: orbitalSchema,
-		},
-	},
+const orbital = {
+  symbol: { type: "string" },
 };
-
-const systemSchema = {
-	type: "object",
-	additionalProperties: true,
-	required: ["symbol", "sectorSymbol", "type", "x", "y", "waypoints"],
-	properties: {
-		symbol: { type: "string", minLength: 1 },
-		sectorSymbol: { type: "string", minLength: 1 },
-		type: { type: "string", minLength: 1 },
-		x: { type: "integer" },
-		y: { type: "integer" },
-		waypoints: {
-			type: "array",
-			items: waypointSchema,
-		},
-	},
-};
-
-export const systemsResponseSchema = {
-	type: "object",
-	additionalProperties: true,
-	required: ["data"],
-	properties: {
-		data: {
-			type: "array",
-			items: systemSchema,
-		},
-	},
-};
-
-export { orbitalSchema, waypointSchema, systemSchema };
-
-export default systemsResponseSchema;

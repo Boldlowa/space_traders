@@ -13,12 +13,44 @@ const API = axios.create({
   ...options,
 });
 
+const toSystemItem = (system) => {
+  const waypoints = Array.isArray(system?.waypoints) ? system.waypoints : [];
+  const factions = Array.isArray(system?.factions) ? system.factions : [];
+
+  return {
+    id: system.symbol,
+    symbol: system.symbol,
+    name: system.name ?? system.symbol,
+    type: system.type,
+    sectorSymbol: system.sectorSymbol,
+    constellation: system.constellation ?? "Unknown",
+    coordinates: {
+      x: system.x,
+      y: system.y,
+    },
+    waypointCount: waypoints.length,
+    orbitalCount: waypoints.reduce((count, waypoint) => {
+      const orbitals = Array.isArray(waypoint?.orbitals) ? waypoint.orbitals : [];
+      return count + orbitals.length;
+    }, 0),
+    factionSymbols: factions
+      .map((faction) => faction?.symbol)
+      .filter((symbol) => typeof symbol === "string"),
+  };
+};
+
 export const getAgentInfo = async () => {
   const res = await API.get("/my/agent");
   return res.data;
 };
 
-export const getSystemInfo = async (systemSymbol) => {
+export const getAllSystems = async () => {
   const res = await API.get(`/systems`);
-  return res.data;
+  const payload = res.data;
+  const systems = Array.isArray(payload?.data) ? payload.data : [];
+
+  return {
+    items: systems.map(toSystemItem),
+    meta: payload?.meta ?? null,
+  };
 };
