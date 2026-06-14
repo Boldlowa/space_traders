@@ -9,6 +9,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import Systems from "./Pages/Systems/Systems";
 import Fleet from "./Pages/Fleet/Fleet";
 import Contracts from "./Pages/Contracts/Contracts";
+import { AgentProvider, useAgent } from "./AgentContext";
 
 const NAV_ITEMS = [
   { key: "home", label: "Home", icon: <HomeIcon /> },
@@ -30,8 +31,9 @@ function renderPage(page: string) {
   );
 }
 
-function App() {
+function AppContent() {
   const [activePage, setActivePage] = useState("home");
+  const { agent } = useAgent();
 
   return (
     <div className="app-shell">
@@ -39,6 +41,7 @@ function App() {
         <h1 className="brand-title">SpaceTraders Dashboard</h1>
         <h2 className="page-title">{NAV_ITEMS.find((item) => item.key === activePage)?.label}</h2>
         <h3 className="name">Boldlowa</h3>
+        <span className="credits">Credits: {agent?.credits ?? 0}</span>
       </header>
 
       <div className="body-layout">
@@ -61,6 +64,14 @@ function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AgentProvider>
+      <AppContent />
+    </AgentProvider>
   );
 }
 

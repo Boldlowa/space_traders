@@ -36,7 +36,6 @@ function Systems() {
       const result = await getCurrentLocation();
       setCurrentLocation(result);
       setLocalCurrentLocation(result);
-      console.log("Fetched current location:", result);
     } catch (error) {
       console.error("Error fetching current location:", error);
     }

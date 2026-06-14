@@ -6,9 +6,10 @@ import { acceptContract } from "../Api";
 
 type ContractCardProps = {
   contract: Contract;
+  onAcceptSuccess?: () => void;
 };
 
-export function ContractCard({ contract }: ContractCardProps) {
+export function ContractCard({ contract, onAcceptSuccess }: ContractCardProps) {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleAcceptContract = async () => {
@@ -17,6 +18,7 @@ export function ContractCard({ contract }: ContractCardProps) {
 
       if (success) {
         enqueueSnackbar(`Contrat accepté avec succès ! Premier versement de ${contract.terms.payment.onAccepted} reçu.`, { variant: "success" });
+        onAcceptSuccess?.();
       } else {
         enqueueSnackbar("Impossible d'accepter le contrat.", { variant: "error" });
       }

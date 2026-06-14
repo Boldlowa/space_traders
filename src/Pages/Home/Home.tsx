@@ -14,10 +14,6 @@ type Agent = {
 
 function Home() {
   const [agent, setAgent] = useState<Agent | null>(null);
-  const [systems, setSystems] = useState<SystemItem[]>([]);
-  const [systemsMeta, setSystemsMeta] = useState<SystemsMeta | null>(null);
-  const [isSystemsLoading, setIsSystemsLoading] = useState(false);
-  const [systemsError, setSystemsError] = useState("");
 
   useEffect(() => {
     const loadAgent = async () => {

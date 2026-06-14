@@ -272,3 +272,150 @@
   justify-content: flex-end;
   margin-top: 20px;
 }
+
+/* Ship Cards */
+.ship-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 280px;
+  transition: all 0.2s ease;
+}
+
+.ship-card:hover {
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);
+}
+
+.ship-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  padding-bottom: 8px;
+}
+
+.ship-name {
+  margin: 0;
+  color: #f8fafc;
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.ship-status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #374151;
+  color: #cbd5e1;
+}
+
+.ship-status.docked {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.ship-status.in_transit {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.ship-status.in_orbit {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.ship-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ship-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ship-label {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ship-value {
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.ship-resources {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 8px;
+}
+
+.resource-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.resource-label {
+  color: #94a3b8;
+  min-width: 60px;
+}
+
+.resource-progress {
+  flex: 1;
+  height: 6px;
+  background: #0f172a;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.resource-fill {
+  height: 100%;
+  transition: width 0.2s ease;
+}
+
+.resource-fill.fuel {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+.resource-fill.cargo {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.resource-value {
+  color: #cbd5e1;
+  min-width: 50px;
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.ship-crew-morale {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.crew-info,
+.morale-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

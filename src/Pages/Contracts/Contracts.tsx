@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { getMyContracts } from "../../Api";
 import { Contract } from "../../Schema/contractsSchema";
 import { ContractCard } from "../../Common/ContractCard";
+import { useAgent } from "../../AgentContext";
 import "./Contracts.css";
 
 function Contracts() {
+  const { refreshAgent } = useAgent();
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [isContractsLoading, setIsContractsLoading] = useState(false);
   const [contractsError, setContractsError] = useState("");
@@ -22,6 +24,12 @@ function Contracts() {
     } finally {
       setIsContractsLoading(false);
     }
+  };
+
+  const handleContractAccepted = async () => {
+    // Rafraîchir l'agent et recharger les contrats après acceptation
+    await refreshAgent();
+    await loadMyContracts();
   };
 
   useEffect(() => {
@@ -46,7 +54,7 @@ function Contracts() {
         <div className="contracts-grid">
           {contracts.length > 0 ? (
             contracts.map((contract) => (
-              <ContractCard key={contract.id} contract={contract} />
+              <ContractCard key={contract.id} contract={contract} onAcceptSuccess={handleContractAccepted} />
             ))
           ) : (
             <p className="contracts-empty">Aucun contrat disponible.</p>
