@@ -144,3 +144,17 @@ export const findAvailableShipsAtShipyard = async (shipyardLocation: Location): 
     return [];
   }
 };
+
+export const buyShip = async (selectedShip: ShipyardShip, shipYard: Location): Promise<any> => {
+  try {
+    const res = await API.post('/my/ships', {
+      shipType: selectedShip.type,
+      waypointSymbol: shipYard.symbol,
+    });
+    console.log("Ship purchased:", res.data);
+    return res.data.data;
+  } catch (error) {
+    console.error("Error buying ship:", error);
+    throw error;
+  }
+};

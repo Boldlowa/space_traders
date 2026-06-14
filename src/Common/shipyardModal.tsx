@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Location } from "../Schema/systemSchema";
-import { findAvailableShipsAtShipyard } from '../Api';
+import { buyShip, findAvailableShipsAtShipyard } from '../Api';
 import { ShipyardShip } from '../Schema/fleetSchema';
+import { useSnackbar } from 'notistack';
 
 
 type Ship = ShipyardShip;
@@ -20,27 +21,51 @@ const formatBool = (value: boolean) => (value ? "Oui" : "Non");
 
 const ShipyardModal: React.FC<Props> = ({ open, onClose, selectedShipyard, onPurchase }) => {
     const [availableShips, setAvailableShips] = useState<Ship[]>([]);
+    const [selectedShip, setSelectedShip] = useState<ShipyardShip | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPurchasing, setIsPurchasing] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
     
     const getShipsAvailableAtShipyard = async () => {
-    if (!selectedShipyard) return;
-    setIsLoading(true);
-    try {
-      const shipList = await findAvailableShipsAtShipyard(selectedShipyard);
-      setAvailableShips(Array.isArray(shipList) ? shipList : []);
-    } catch (error) {
-      console.error("Error fetching available ships:", error);
-      setAvailableShips([]);
-    } finally {
-      setIsLoading(false);
+      if (!selectedShipyard) return;
+      setIsLoading(true);
+      try {
+        const shipList = await findAvailableShipsAtShipyard(selectedShipyard);
+        setAvailableShips(Array.isArray(shipList) ? shipList : []);
+      } catch (error) {
+        console.error("Error fetching available ships:", error);
+        setAvailableShips([]);
+        enqueueSnackbar('Erreur lors du chargement des vaisseaux', { variant: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
     }
-  }
+
+    const buySelectedShip = async (ship: ShipyardShip) => {
+      if (!selectedShipyard) return;
+      setIsPurchasing(true);
+      try {
+        await buyShip(ship, selectedShipyard);
+        enqueueSnackbar(`Vaisseau ${ship.name} acheté avec succès!`, { variant: 'success' });
+        setSelectedShip(null);
+       
+        await getShipsAvailableAtShipyard();
+      } catch (error: any) {
+        console.error("Error buying ship:", error);
+        const errorMsg = error?.response?.data?.error?.message || 'Erreur lors de l\'achat du vaisseau';
+        enqueueSnackbar(errorMsg, { variant: 'error' });
+      } finally {
+        setIsPurchasing(false);
+      }
+    }
+
     useEffect(() => {
-    if (selectedShipyard) {
-      getShipsAvailableAtShipyard();
-    }
-}, [selectedShipyard]);
-  if (!open) return null;
+      if (selectedShipyard) {
+        getShipsAvailableAtShipyard();
+      }
+    }, [selectedShipyard]);
+    
+    if (!open) return null;
 
   
 
@@ -112,8 +137,12 @@ const ShipyardModal: React.FC<Props> = ({ open, onClose, selectedShipyard, onPur
                       <p className="shipyard-ship-price">💰 {s.purchasePrice.toLocaleString()} credits</p>
                     )}
                   </div>
-                  <button onClick={() => onPurchase?.(s.type)} className="shipyard-buy-button">
-                    Acheter
+                  <button 
+                    onClick={() => buySelectedShip(s)} 
+                    disabled={isPurchasing}
+                    className="shipyard-buy-button"
+                  >
+                    {isPurchasing ? 'Achat...' : 'Acheter'}
                   </button>
                 </div>
               ))}
