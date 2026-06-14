@@ -7,6 +7,7 @@ import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import Systems from "./Pages/Systems/Systems";
+import Contracts from "./Pages/Contracts/Contracts";
 
 const NAV_ITEMS = [
   { key: "home", label: "Home", icon: <HomeIcon /> },
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
 function renderPage(page: string) {
   if (page === "home") return <Home />;
   if (page === "systems") return <Systems />;
+  if (page === "contracts") return <Contracts />;
   return (
     <div style={{ padding: 32, color: "#94a3b8" }}>
       <h2>{page.charAt(0).toUpperCase() + page.slice(1)}</h2>

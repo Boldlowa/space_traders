@@ -6,8 +6,9 @@ import type {
   SystemsMeta,
   SystemsResult,
   Waypoint,
-  Location
+  Location,
 } from "./Schema/systemSchema";
+import type { Contract } from "./Schema/contractsSchema";
 
 export type { SystemItem, SystemsMeta } from "./Schema/systemSchema";
 const AGENT_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiQk9MRExPV0FfRklSU1QiLCJ2ZXJzaW9uIjoidjIuMy4wIiwicmVzZXRfZGF0ZSI6IjIwMjYtMDYtMTQiLCJpYXQiOjE3ODE0NTU0NDgsInN1YiI6ImFnZW50LXRva2VuIn0.StQAwxmSl_XHtaGIGiu26j_mvSeC0FMaxst7JcIj9Iae20Eea6Ezf1Xz6IOdr3hmf3XRV8V4tHOASnwlSGxKRMwQ4ZUvxXw21H0Nf9QFpocjnQgXzihOzD-9BX1Zr7GJTL7_fbfsrvwFWig7V3nr4TQUSmonS_9ChZnmrlpsK2GDJk-C4P_PJSkYBjotKXuhd77_I1-LQLdN7Q6i48nbwwWIPIaePMCqK_ZSjtX6_qEUD3YDTHpFCYcPhG9zQqwu_S6ChTb1CUJ0Yh3r3Bu0e9P1duxgOnwcsbwRW1HSEN-h9yya5YibPEh4c__aKSWbZ2qY728i6qXSwMTmsg7rgX_6qJ8YRbFd-OH4yPHbDACjhcZFE_siMh6ZBWx7peyFNLIADwiePagShuV6pL8EeEzQELMY3F9YDKWl_wmsrRHBo57bOuHcIeJZOHeedfQLfK95zglDzgVwNdlNLI0Vm-85eTjb1HTrzg3ysDwrd9YWXLKV5FiGvrP6SAXugGNljwL5bPM8fjRNK2Knh4T8KuMLMgWjiYr-8mBCfITDZZ2RGKH7fJzl8HAMa15eZOVqHinYoJrASJ5KIHfRIw2KR1dGwb245ox7MrL4Y6q1bxA2gZ_gR-wv7SxcVH22p0GGtvFQb7jX6tyGF3Pi6LaS4d-enWBiilOjVA3Vz3mnM3k";
@@ -58,9 +59,18 @@ export const getAgentInfo = async (): Promise<AgentResult> => {
   return res.data;
 };
 
+const getSystemSymbolFromWaypoint = (waypointSymbol: string): string => {
+  const parts = waypointSymbol.split("-");
+  return parts.slice(0, 2).join("-");
+};
+
 export const getCurrentLocation = async (): Promise<Location> => {
+  const agent = await getAgentInfo();
+  const waypointSymbol = agent.data.headquarters;
+  const systemSymbol = getSystemSymbolFromWaypoint(waypointSymbol);
+
   const res = await API.get<{ data: Location }>(
-    "systems/X1-FR16/waypoints/X1-FR16-A1",
+    `/systems/${systemSymbol}/waypoints/${waypointSymbol}`,
   );
   console.log("Fetched current location:", res.data);
   return res.data.data;
@@ -77,3 +87,20 @@ export const getAllSystems = async (): Promise<SystemsResult> => {
     meta: payload?.meta ?? null,
   };
 };
+
+// Contracts
+
+export const getMyContracts = async (): Promise<{ data: Contract[] }> => {
+  const res = await API.get<{ data: Contract[] }>("/my/contracts");
+  return res.data;
+};
+
+export const negotiateContract = async (): Promise<void> => {
+  // Implement negotiation logic here
+};
+
+export const acceptContract = async (contractId: string): Promise<boolean> => {
+  const res = await API.post(`/my/contracts/${contractId}/accept`);
+  return res.status === 200;
+};
+
