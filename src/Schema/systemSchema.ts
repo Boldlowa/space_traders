@@ -2,6 +2,18 @@ export interface OrbitalRef {
   symbol?: string;
 }
 
+export interface TraitRef {
+  symbol: string;
+  name: string;
+  description: string;
+}
+
+export interface chartRef {
+  submittedBy: string;
+  submittedOn: string;
+  waypointSymbol: string;
+}
+
 export interface Waypoint {
   orbitals?: OrbitalRef[];
 }
@@ -38,6 +50,20 @@ export interface SystemItem {
   factionSymbols: string[];
 }
 
+export interface Location {
+  symbol: string;
+  type: string;
+  systemSymbol: string;
+  x: number;
+  y: number;
+  orbitals: OrbitalRef[];
+  traits: TraitRef[];
+  isUnderConstruction: boolean;
+  faction: FactionRef | null;
+  modifier: string[];
+  chart: chartRef;
+}
+
 export interface SystemsMeta {
   total: number;
   page: number;
@@ -51,7 +77,11 @@ export interface SystemsResult {
 
 export interface AgentResult {
   data: {
+    accountId: string;
     symbol: string;
+    headquarters: string;
     credits: number;
+    startingFaction: string;
+    shipCount: number;
   };
 }

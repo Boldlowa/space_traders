@@ -6,15 +6,17 @@ import type {
   SystemsMeta,
   SystemsResult,
   Waypoint,
+  Location
 } from "./Schema/systemSchema";
 
 export type { SystemItem, SystemsMeta } from "./Schema/systemSchema";
+const AGENT_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiQk9MRExPV0FfRklSU1QiLCJ2ZXJzaW9uIjoidjIuMy4wIiwicmVzZXRfZGF0ZSI6IjIwMjYtMDYtMTQiLCJpYXQiOjE3ODE0NTU0NDgsInN1YiI6ImFnZW50LXRva2VuIn0.StQAwxmSl_XHtaGIGiu26j_mvSeC0FMaxst7JcIj9Iae20Eea6Ezf1Xz6IOdr3hmf3XRV8V4tHOASnwlSGxKRMwQ4ZUvxXw21H0Nf9QFpocjnQgXzihOzD-9BX1Zr7GJTL7_fbfsrvwFWig7V3nr4TQUSmonS_9ChZnmrlpsK2GDJk-C4P_PJSkYBjotKXuhd77_I1-LQLdN7Q6i48nbwwWIPIaePMCqK_ZSjtX6_qEUD3YDTHpFCYcPhG9zQqwu_S6ChTb1CUJ0Yh3r3Bu0e9P1duxgOnwcsbwRW1HSEN-h9yya5YibPEh4c__aKSWbZ2qY728i6qXSwMTmsg7rgX_6qJ8YRbFd-OH4yPHbDACjhcZFE_siMh6ZBWx7peyFNLIADwiePagShuV6pL8EeEzQELMY3F9YDKWl_wmsrRHBo57bOuHcIeJZOHeedfQLfK95zglDzgVwNdlNLI0Vm-85eTjb1HTrzg3ysDwrd9YWXLKV5FiGvrP6SAXugGNljwL5bPM8fjRNK2Knh4T8KuMLMgWjiYr-8mBCfITDZZ2RGKH7fJzl8HAMa15eZOVqHinYoJrASJ5KIHfRIw2KR1dGwb245ox7MrL4Y6q1bxA2gZ_gR-wv7SxcVH22p0GGtvFQb7jX6tyGF3Pi6LaS4d-enWBiilOjVA3Vz3mnM3k";
 
 const options = {
   headers: {
     "Content-Type": "application/json",
     Authorization:
-      "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiQk9MRExPV0FfRklSU1QiLCJ2ZXJzaW9uIjoidjIuMy4wIiwicmVzZXRfZGF0ZSI6IjIwMjYtMDYtMDciLCJpYXQiOjE3ODEyNjk1MjcsInN1YiI6ImFnZW50LXRva2VuIn0.oFbTYP9TSUV-dte62uKGOSHjAwPs9g5uuQUUJJx6kip_m12RSgPrGn-rwQL4nttOgLdiUW1-d8k7bgbORfZaLGFDOIuUR0bk43DJkAve71cpCutb378eFnoiSL3h9zHBB0fmSWG3xqPKc1CxKaiiNFOFZEJFQdscvAPkqONPnes4A1eE4LTVb3WAktDgzm1cckrn-0vIDeGrMadlfxAOMoSGhiM2P6tsyrXKMrKNJj99FriQfHRI_X_z5SLS_vYNyOg7kVOS4IbYcpYSpOs7Tk3kqz7yMQBZvhe2uMM6pfYpxWsxWl4LRGRWPHez6CbPSgjQejEF_pv5WDT882TdezvKJy4CpKEtPQmz4GwjetmpBJWAjwoRS-dTIFuN92rJ7ICNBWKeEGWwyKc3Nmfpj8U6EMUIT7Uxz760ns41-jMVJI0WzaV4oYelm177NO5DRClh7DlIK2RDnpIpu3jRTG68bWUhXjJxTENGVuYf5plWDwnVDCJ-qVKfxTw7U256M-2GW-ZJyTrMjb5O3U_6Se7LDC-iDBMHNO_GSTuGERFgcwhnFUioZmYlqXYK-aTiXuDsAxQ9-DZ0lBScCyH9fatsA4QAPe-LjbhxuzKaXYwZ4IqSJrVNH-qZ5Za0_FVlenJ8_1Ukqz_zvX2hmGIuigLqxPCQ19eKjR3M--06Ygk",
+      `Bearer ${AGENT_TOKEN}`,
   },
 };
 
@@ -56,13 +58,20 @@ export const getAgentInfo = async (): Promise<AgentResult> => {
   return res.data;
 };
 
+export const getCurrentLocation = async (): Promise<Location> => {
+  const res = await API.get<{ data: Location }>(
+    "systems/X1-FR16/waypoints/X1-FR16-A1",
+  );
+  console.log("Fetched current location:", res.data);
+  return res.data.data;
+};
+
 export const getAllSystems = async (): Promise<SystemsResult> => {
   const res = await API.get<{ data?: RawSystem[]; meta?: SystemsMeta }>(
     "/systems",
   );
   const payload = res.data;
   const systems = Array.isArray(payload?.data) ? payload.data : [];
-  console.log("Fetched systems:", systems);
   return {
     items: systems.map(toSystemItem),
     meta: payload?.meta ?? null,
